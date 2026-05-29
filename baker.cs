@@ -2,18 +2,21 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-public class BakePoiyomiHueShift : EditorWindow {
+public class UnityTextureBaker : EditorWindow
+{
     private Material sourceMaterial;
     private string savePath = "Assets/BakedTexture.png";
     private int textureSize = 2048;
 
-    [MenuItem("Tools/Bake Poiyomi Hue Shift")]
-    public static void ShowWindow() {
-        GetWindow<BakePoiyomiHueShift>("Bake Hue Shift");
+    [MenuItem("Tools/Texture Baker")]
+    public static void ShowWindow()
+    {
+        GetWindow<UnityTextureBaker>("Texture Baker");
     }
 
-    private void OnGUI() {
-        GUILayout.Label("Bake Poiyomi Color Adjust to Texture", EditorStyles.boldLabel);
+    private void OnGUI()
+    {
+        GUILayout.Label("Bake Shader Effects to Texture", EditorStyles.boldLabel);
         sourceMaterial = (Material)EditorGUILayout.ObjectField("Source Material", sourceMaterial, typeof(Material), false);
         textureSize = EditorGUILayout.IntField("Texture Size", textureSize);
         savePath = EditorGUILayout.TextField("Save Path", savePath);
@@ -22,27 +25,25 @@ public class BakePoiyomiHueShift : EditorWindow {
             BakeTexture();
     }
 
-    private void BakeTexture() {
-        // Grab the main texture from the material
+    private void BakeTexture()
+    {
         Texture2D sourceTexture = sourceMaterial.GetTexture("_MainTex") as Texture2D;
-        if (sourceTexture == null) {
-            // Poiyomi uses _Texture0 as the main texture slot
+        if (sourceTexture == null)
+        {
             sourceTexture = sourceMaterial.GetTexture("_Texture0") as Texture2D;
         }
 
-        if (sourceTexture == null) {
+        if (sourceTexture == null)
+        {
             EditorUtility.DisplayDialog("Error", "Could not find main texture on material.", "OK");
             return;
         }
 
-        // Create a quad with this material and render it
         RenderTexture rt = new RenderTexture(textureSize, textureSize, 0, RenderTextureFormat.ARGB32);
         rt.Create();
 
-        // Blit the texture through the material (applies all shader effects including hue shift)
         Graphics.Blit(sourceTexture, rt, sourceMaterial);
 
-        // Read back to Texture2D
         RenderTexture.active = rt;
         Texture2D result = new Texture2D(textureSize, textureSize, TextureFormat.RGBA32, false);
         result.ReadPixels(new Rect(0, 0, textureSize, textureSize), 0, 0);
@@ -50,7 +51,6 @@ public class BakePoiyomiHueShift : EditorWindow {
         RenderTexture.active = null;
         rt.Release();
 
-        // Save as PNG
         byte[] bytes = result.EncodeToPNG();
         string fullPath = Path.Combine(Application.dataPath, "../", savePath);
         File.WriteAllBytes(fullPath, bytes);
