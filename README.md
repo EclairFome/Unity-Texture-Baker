@@ -1,5 +1,5 @@
-Whilst working on my VRChat avatar, I needed to match my PC avatar's eye color on the Quest/Android version. The PC avatar used Poiyomi's hue shift to change the eye color at runtime, but Quest avatars can't use Poiyomi (Since they're limited to VRChat's mobile shader). 
-With no built-in bake option available in my version of Poiyomi, I needed a way to export the final shader output as a plain texture that could be used without any shader magic, this tool was the result.
+Whilst working on my VRChat avatar, I needed to match my PC avatar's eye color on the Quest/Android version. The PC avatar used Poiyomi's hue shift to change the eye color at runtime, but Quest avatars can't use Poiyomi (since they're limited to VRChat's mobile shader). 
+I needed a way to export the final shader output as a plain texture that could be used without any shader magic, this tool was the result.
 
 # Installation
 
